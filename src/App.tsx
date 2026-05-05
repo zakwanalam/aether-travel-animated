@@ -1,6 +1,5 @@
 import Navbar from './components/Navbar';
 import HeroAnimation from './components/HeroAnimation';
-import DynamicContent from './components/DynamicContent';
 import DestinationSection from './components/DestinationSection';
 import ExperienceSection from './components/ExperienceSection';
 import TrustSection from './components/TrustSection';
