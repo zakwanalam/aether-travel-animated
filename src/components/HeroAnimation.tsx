@@ -34,7 +34,7 @@ const HeroAnimation: React.FC = () => {
         const img = new Image();
         const paddedIndex = index.toString().padStart(4, '0');
         const layerIndex = FRAME_COUNT - index;
-        img.src = `/frames/travel_${paddedIndex}_Layer ${layerIndex}.jpg`;
+        img.src = `/frames/travel_${paddedIndex}_Layer ${layerIndex}.webp`;
         
         img.onload = () => {
           loadedCount++;

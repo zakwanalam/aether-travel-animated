@@ -536,7 +536,7 @@ h1, h2, h3 {
   .mobile-horizontal-track {
     display: flex;
     gap: 30px;
-    padding: 0 40px;
+    padding: 0 7.5vw; /* Center the first card initially */
     position: relative;
     z-index: 15;
     will-change: transform;

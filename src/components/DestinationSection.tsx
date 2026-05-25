@@ -8,22 +8,22 @@ const destinations = [
   {
     title: 'Maldives',
     description: 'Overwater serenity',
-    image: '/destinations/maldives.png',
+    image: '/destinations/maldives.webp',
   },
   {
     title: 'Switzerland',
     description: 'Alpine elegance',
-    image: '/destinations/switzerland.png',
+    image: '/destinations/switzerland.webp',
   },
   {
     title: 'Dubai',
     description: 'Modern luxury',
-    image: '/destinations/dubai.png',
+    image: '/destinations/dubai.webp',
   },
   {
     title: 'Bali',
     description: 'Cultural escape',
-    image: '/destinations/bali.png',
+    image: '/destinations/bali.webp',
   },
 ];
 
@@ -67,26 +67,29 @@ const DestinationSection: React.FC = () => {
             }
           }
         );
-      } else {
-        // Mobile Horizontal Scroll Animation
-        if (!mobileTrackRef.current) return;
-        gsap.fromTo(mobileTrackRef.current,
-          { x: '10vw' },
-          {
-            x: `-${(destinations.length - 1) * 85}vw`,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top top',
-              end: 'bottom bottom',
-              pin: '.trajectory-container',
-              pinSpacing: true,
-              scrub: 1,
-              invalidateOnRefresh: true,
+        } else {
+          // Mobile Horizontal Scroll Animation: Perfect Centering
+          if (!mobileTrackRef.current) return;
+          
+          // Total distance: (card width + gap) * (number of cards - 1)
+          // 85vw width + 30px gap
+          gsap.fromTo(mobileTrackRef.current,
+            { x: '0' },
+            {
+              x: `calc(-${(destinations.length - 1) * 85}vw - ${(destinations.length - 1) * 30}px)`,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top top',
+                end: 'bottom bottom',
+                pin: '.trajectory-container',
+                pinSpacing: true,
+                scrub: 1,
+                invalidateOnRefresh: true,
+              }
             }
-          }
-        );
-      }
+          );
+        }
     }, sectionRef);
 
     return () => ctx.revert();
