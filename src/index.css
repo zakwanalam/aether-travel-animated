@@ -539,6 +539,66 @@ h1, h2, h3 {
     padding: 30px !important; /* More padding for legibility */
   }
 
+  /* Mobile Carousel Specifics */
+  .mobile-carousel-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 40px;
+    padding: 0 20px;
+    overflow-x: hidden;
+  }
+  .mobile-carousel-track {
+    display: flex;
+    gap: 20px;
+    cursor: grab;
+  }
+  .mobile-destination-card {
+    min-width: calc(100vw - 60px);
+    height: 500px;
+  }
+  .mobile-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+  }
+  .mobile-card-img {
+    width: 100%;
+    height: 70%;
+    object-fit: cover;
+  }
+  .mobile-card-content {
+    padding: 25px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: rgba(0,0,0,0.4);
+  }
+  .mobile-card-content h3 {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+    color: white;
+  }
+  .mobile-card-content p {
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin: 0;
+  }
+  .mobile-carousel-hint {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 10px;
+    letter-spacing: 4px;
+    opacity: 0.5;
+  }
+
   /* Experience Section */
   .experience-section {
     padding: 80px 30px !important;

@@ -1,5 +1,6 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
+import { motion } from 'framer-motion';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -30,9 +31,9 @@ const destinations = [
 const DestinationSection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = React.useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const mql = window.matchMedia('(max-width: 768px)');
     setIsMobile(mql.matches);
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
@@ -80,32 +81,59 @@ const DestinationSection: React.FC = () => {
           </p>
         </div>
 
-        <div ref={wheelRef} className="trajectory-wheel">
-          {destinations.map((dest, i) => {
-            // Distribute cards along the wheel - wider angle on mobile to avoid congestion
-            const angleStep = isMobile ? 32 : 12;
-            const angle = (i - (destinations.length - 1) / 2) * angleStep;
-            return (
-              <div
-                key={dest.title}
-                className="trajectory-card"
-                style={{
-                  transform: `translateX(-50%) rotate(${angle}deg)`
-                }}
-              >
-                <img src={dest.image} alt={dest.title} className="trajectory-card-img" />
-                <div className="trajectory-card-overlay">
-                  <h3 style={{ fontSize: '2.5rem', fontWeight: 300, marginBottom: '8px', letterSpacing: '4px' }} className="lux-text-shadow">
-                    {dest.title}
-                  </h3>
-                  <p style={{ color: 'var(--color-accent)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '3px' }}>
-                    {dest.description}
-                  </p>
+        {/* Desktop View: Interactive GSAP Wheel */}
+        {!isMobile && (
+          <div ref={wheelRef} className="trajectory-wheel">
+            {destinations.map((dest, i) => {
+              const angle = (i - (destinations.length - 1) / 2) * 12;
+              return (
+                <div
+                  key={dest.title}
+                  className="trajectory-card"
+                  style={{
+                    transform: `translateX(-50%) rotate(${angle}deg)`
+                  }}
+                >
+                  <img src={dest.image} alt={dest.title} className="trajectory-card-img" />
+                  <div className="trajectory-card-overlay">
+                    <h3 style={{ fontSize: '2.5rem', fontWeight: 300, marginBottom: '8px', letterSpacing: '4px' }} className="lux-text-shadow">
+                      {dest.title}
+                    </h3>
+                    <p style={{ color: 'var(--color-accent)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '3px' }}>
+                      {dest.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Mobile View: Horizontal Snap Carousel */}
+        {isMobile && (
+          <div className="mobile-carousel-wrapper">
+            <motion.div 
+              className="mobile-carousel-track"
+              drag="x"
+              dragConstraints={{ right: 0, left: -(destinations.length - 1) * (window.innerWidth - 60) }}
+            >
+              {destinations.map((dest) => (
+                <div key={dest.title} className="mobile-destination-card">
+                  <div className="mobile-card-inner lux-glass">
+                    <img src={dest.image} alt={dest.title} className="mobile-card-img" />
+                    <div className="mobile-card-content">
+                      <h3 className="lux-text-gradient">{dest.title}</h3>
+                      <p>{dest.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+            <div className="mobile-carousel-hint">
+              SWIPE TO EXPLORE
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
