@@ -42,13 +42,14 @@ const DestinationSection: React.FC = () => {
   }, []);
 
   useLayoutEffect(() => {
-    if (!wheelRef.current || !sectionRef.current) return;
+    if (!sectionRef.current) return;
 
     // Register inside to be safe with HMR
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
       if (!isMobile) {
+        if (!wheelRef.current) return;
         // Desktop Wheel Animation
         gsap.fromTo(wheelRef.current,
           { rotation: 25 },
@@ -68,29 +69,28 @@ const DestinationSection: React.FC = () => {
         );
       } else {
         // Mobile Horizontal Scroll Animation
-        if (mobileTrackRef.current) {
-          gsap.fromTo(mobileTrackRef.current,
-            { x: '10vw' },
-            {
-              x: `-${(destinations.length - 1) * 85}vw`,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: sectionRef.current,
-                start: 'top top',
-                end: 'bottom bottom',
-                pin: '.trajectory-container',
-                pinSpacing: true,
-                scrub: 1,
-                invalidateOnRefresh: true,
-              }
+        if (!mobileTrackRef.current) return;
+        gsap.fromTo(mobileTrackRef.current,
+          { x: '10vw' },
+          {
+            x: `-${(destinations.length - 1) * 85}vw`,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top top',
+              end: 'bottom bottom',
+              pin: '.trajectory-container',
+              pinSpacing: true,
+              scrub: 1,
+              invalidateOnRefresh: true,
             }
-          );
-        }
+          }
+        );
       }
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile]);
 
   return (
     <section ref={sectionRef} className="destination-section">

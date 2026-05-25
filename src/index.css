@@ -537,15 +537,17 @@ h1, h2, h3 {
     display: flex;
     gap: 30px;
     padding: 0 40px;
-    position: relative; /* Switch to relative for natural flow */
+    position: relative;
     z-index: 15;
     will-change: transform;
-    margin-top: 20px;
+    margin-top: 40px;
+    min-height: 400px; /* Ensure it has a height */
   }
   .mobile-destination-card {
-    min-width: 80vw;
+    min-width: 85vw;
     height: 55vh;
     min-height: 380px;
+    flex-shrink: 0; /* Important! Prevent cards from shrinking */
   }
   .mobile-card-inner {
     position: relative;
