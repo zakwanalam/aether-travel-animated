@@ -92,9 +92,17 @@ h1, h2, h3 {
 
 .destination-section {
   position: relative;
-  height: 600vh; /* Extended duration for cinematic pinning */
+  height: 600vh; /* Desktop: Extended duration for cinematic pinning */
   background: #030a16;
-  overflow: visible; /* Prevent clipping of pinned elements during transition */
+  overflow: visible;
+}
+
+@media (max-width: 768px) {
+  .destination-section {
+    height: auto;
+    min-height: 100vh;
+    padding: 60px 0;
+  }
 }
 
 .trajectory-container {
@@ -107,6 +115,13 @@ h1, h2, h3 {
   justify-content: center;
   overflow: hidden;
   z-index: 50;
+}
+
+@media (max-width: 768px) {
+  .trajectory-container {
+    height: auto;
+    overflow: visible;
+  }
 }
 
 .trajectory-header {
@@ -362,24 +377,6 @@ h1, h2, h3 {
 }
 
 /* Final CTA */
-.destination-section {
-  height: 300vh;
-  background: #000;
-  position: relative;
-  z-index: 5;
-}
-
-.trajectory-container {
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  background: radial-gradient(circle at center, #051923 0%, #000 70%);
-}
-
 .cta-section {
   position: relative;
   min-height: 80vh;
@@ -535,19 +532,27 @@ h1, h2, h3 {
   /* Mobile Horizontal Track (Scroll-Driven) */
   .mobile-horizontal-track {
     display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
     gap: 30px;
-    padding: 0 7.5vw; /* Center the first card initially */
+    padding: 0 7.5vw;
     position: relative;
     z-index: 15;
-    will-change: transform;
     margin-top: 40px;
-    min-height: 400px; /* Ensure it has a height */
+    min-height: 400px;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-horizontal-track::-webkit-scrollbar {
+    display: none; /* Hide scrollbar Chrome/Safari/Webkit */
   }
   .mobile-destination-card {
     min-width: 85vw;
     height: 55vh;
     min-height: 380px;
-    flex-shrink: 0; /* Important! Prevent cards from shrinking */
+    flex-shrink: 0;
+    scroll-snap-align: center;
   }
   .mobile-card-inner {
     position: relative;
@@ -585,6 +590,44 @@ h1, h2, h3 {
     text-transform: uppercase;
     letter-spacing: 3px;
     margin: 0;
+  }
+
+  .mobile-carousel-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    z-index: 100;
+    position: relative;
+    padding-bottom: 40px;
+    pointer-events: auto;
+  }
+
+  .mobile-arrow-btn {
+    width: 60px; /* Slightly larger targets */
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    touch-action: manipulation;
+  }
+
+  .mobile-arrow-btn:active {
+    transform: scale(0.85);
+    background: var(--color-accent);
+    color: var(--color-bg);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 20px var(--color-accent);
+  }
+
+  .mobile-arrow-btn svg {
+    width: 24px;
+    height: 24px;
   }
 
   /* Experience Section */

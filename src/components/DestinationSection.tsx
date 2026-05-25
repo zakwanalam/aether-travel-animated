@@ -29,6 +29,7 @@ const destinations = [
 
 const DestinationSection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
   const mobileTrackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -42,15 +43,15 @@ const DestinationSection: React.FC = () => {
   }, []);
 
   useLayoutEffect(() => {
-    if (!sectionRef.current) return;
+    if (!sectionRef.current || !containerRef.current) return;
 
     // Register inside to be safe with HMR
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
+      // Desktop Wheel Animation (Pinning only on Desktop)
       if (!isMobile) {
         if (!wheelRef.current) return;
-        // Desktop Wheel Animation
         gsap.fromTo(wheelRef.current,
           { rotation: 25 },
           {
@@ -60,44 +61,61 @@ const DestinationSection: React.FC = () => {
               trigger: sectionRef.current,
               start: 'top top',
               end: 'bottom bottom',
-              pin: '.trajectory-container',
+              pin: containerRef.current,
               pinSpacing: true,
               scrub: 1,
               invalidateOnRefresh: true,
             }
           }
         );
-        } else {
-          // Mobile Horizontal Scroll Animation: Perfect Centering
-          if (!mobileTrackRef.current) return;
-          
-          // Total distance: (card width + gap) * (number of cards - 1)
-          // 85vw width + 30px gap
-          gsap.fromTo(mobileTrackRef.current,
-            { x: '0' },
-            {
-              x: `calc(-${(destinations.length - 1) * 85}vw - ${(destinations.length - 1) * 30}px)`,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: sectionRef.current,
-                start: 'top top',
-                end: 'bottom bottom',
-                pin: '.trajectory-container',
-                pinSpacing: true,
-                scrub: 1,
-                invalidateOnRefresh: true,
-              }
-            }
-          );
-        }
+      }
+      // Mobile uses standard CSS scroll snapping (no GSAP needed for movement)
     }, sectionRef);
 
     return () => ctx.revert();
   }, [isMobile]);
 
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    const track = mobileTrackRef.current;
+    if (!track) return;
+    
+    const cards = Array.from(track.querySelectorAll('.mobile-destination-card')) as HTMLElement[];
+    if (cards.length === 0) return;
+
+    // Center of the track's scroll viewport
+    const trackScrollCenter = track.scrollLeft + track.clientWidth / 2;
+
+    let closestIndex = 0;
+    let minDistance = Infinity;
+
+    // Find which card is currently closest to the center
+    cards.forEach((card, index) => {
+      // Card's center relative to the track's scrollable content
+      const cardCenter = card.offsetLeft + card.clientWidth / 2;
+      const distance = Math.abs(cardCenter - trackScrollCenter);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    // Determine target index
+    let targetIndex = direction === 'left' ? closestIndex - 1 : closestIndex + 1;
+    targetIndex = Math.max(0, Math.min(targetIndex, cards.length - 1));
+
+    // Get the target card and calculate precise scrollLeft to center it
+    const targetCard = cards[targetIndex];
+    const targetScroll = targetCard.offsetLeft - (track.clientWidth - targetCard.clientWidth) / 2;
+
+    track.scrollTo({
+      left: targetScroll,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <section ref={sectionRef} className="destination-section">
-      <div className="trajectory-container">
+      <div ref={containerRef} className="trajectory-container">
         <div className="trajectory-header">
           <h2 style={{ fontSize: '3rem', marginBottom: '32px' }} className="lux-text-gradient">
             Destinations Worth the Journey
@@ -135,21 +153,44 @@ const DestinationSection: React.FC = () => {
           </div>
         )}
 
-        {/* Mobile View: Scroll-Driven Horizontal Carousel */}
+        {/* Mobile View: Standard Horizontal Carousel */}
         {isMobile && (
-          <div ref={mobileTrackRef} className="mobile-horizontal-track">
-            {destinations.map((dest) => (
-              <div key={dest.title} className="mobile-destination-card">
-                <div className="mobile-card-inner lux-glass">
-                  <img src={dest.image} alt={dest.title} className="mobile-card-img" />
-                  <div className="mobile-card-content">
-                    <h3 className="lux-text-gradient">{dest.title}</h3>
-                    <p>{dest.description}</p>
+          <>
+            <div ref={mobileTrackRef} className="mobile-horizontal-track">
+              {destinations.map((dest) => (
+                <div key={dest.title} className="mobile-destination-card">
+                  <div className="mobile-card-inner lux-glass">
+                    <img src={dest.image} alt={dest.title} className="mobile-card-img" />
+                    <div className="mobile-card-content">
+                      <h3 className="lux-text-gradient">{dest.title}</h3>
+                      <p>{dest.description}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+            
+            <div className="mobile-carousel-controls">
+              <button 
+                className="mobile-arrow-btn lux-glass" 
+                onClick={() => scrollCarousel('left')}
+                aria-label="Previous destination"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <button 
+                className="mobile-arrow-btn lux-glass" 
+                onClick={() => scrollCarousel('right')}
+                aria-label="Next destination"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+          </>
         )}
       </div>
     </section>
