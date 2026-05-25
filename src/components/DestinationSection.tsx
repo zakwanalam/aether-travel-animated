@@ -1,6 +1,5 @@
 import React, { useLayoutEffect, useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
-import { motion } from 'framer-motion';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -31,6 +30,7 @@ const destinations = [
 const DestinationSection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
+  const mobileTrackRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -48,22 +48,45 @@ const DestinationSection: React.FC = () => {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(wheelRef.current,
-        { rotation: 25 },
-        {
-          rotation: -25,
-          ease: 'power1.inOut',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: 'bottom bottom',
-            pin: '.trajectory-container',
-            pinSpacing: true,
-            scrub: 1,
-            invalidateOnRefresh: true,
+      if (!isMobile) {
+        // Desktop Wheel Animation
+        gsap.fromTo(wheelRef.current,
+          { rotation: 25 },
+          {
+            rotation: -25,
+            ease: 'power1.inOut',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top top',
+              end: 'bottom bottom',
+              pin: '.trajectory-container',
+              pinSpacing: true,
+              scrub: 1,
+              invalidateOnRefresh: true,
+            }
           }
+        );
+      } else {
+        // Mobile Horizontal Scroll Animation
+        if (mobileTrackRef.current) {
+          gsap.fromTo(mobileTrackRef.current,
+            { x: '10vw' },
+            {
+              x: `-${(destinations.length - 1) * 85}vw`,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top top',
+                end: 'bottom bottom',
+                pin: '.trajectory-container',
+                pinSpacing: true,
+                scrub: 1,
+                invalidateOnRefresh: true,
+              }
+            }
+          );
         }
-      );
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -109,29 +132,20 @@ const DestinationSection: React.FC = () => {
           </div>
         )}
 
-        {/* Mobile View: Horizontal Snap Carousel */}
+        {/* Mobile View: Scroll-Driven Horizontal Carousel */}
         {isMobile && (
-          <div className="mobile-carousel-wrapper">
-            <motion.div 
-              className="mobile-carousel-track"
-              drag="x"
-              dragConstraints={{ right: 0, left: -(destinations.length - 1) * (window.innerWidth - 60) }}
-            >
-              {destinations.map((dest) => (
-                <div key={dest.title} className="mobile-destination-card">
-                  <div className="mobile-card-inner lux-glass">
-                    <img src={dest.image} alt={dest.title} className="mobile-card-img" />
-                    <div className="mobile-card-content">
-                      <h3 className="lux-text-gradient">{dest.title}</h3>
-                      <p>{dest.description}</p>
-                    </div>
+          <div ref={mobileTrackRef} className="mobile-horizontal-track">
+            {destinations.map((dest) => (
+              <div key={dest.title} className="mobile-destination-card">
+                <div className="mobile-card-inner lux-glass">
+                  <img src={dest.image} alt={dest.title} className="mobile-card-img" />
+                  <div className="mobile-card-content">
+                    <h3 className="lux-text-gradient">{dest.title}</h3>
+                    <p>{dest.description}</p>
                   </div>
                 </div>
-              ))}
-            </motion.div>
-            <div className="mobile-carousel-hint">
-              SWIPE TO EXPLORE
-            </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

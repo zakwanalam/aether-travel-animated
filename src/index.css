@@ -79,6 +79,7 @@ body {
   /* Refined gradient for better contrast */
   background: linear-gradient(135deg, #ffffff 0%, #cffafe 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
 }
@@ -508,53 +509,43 @@ h1, h2, h3 {
     letter-spacing: 6px !important;
   }
 
+  .trajectory-container {
+    padding: 40px 0;
+    justify-content: flex-start !important; /* Push everything to top */
+  }
+
   /* Destination Section (The "dis" section) */
   .trajectory-header {
-    top: 40px !important; /* Fixed too much space on top */
-    padding: 0 20px;
+    position: relative !important;
+    top: 0 !important;
+    padding: 40px 20px 0;
+    margin-bottom: 40px;
+    z-index: 20;
   }
   .trajectory-header h2 {
     font-size: 1.8rem !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 12px !important;
   }
-  .trajectory-wheel {
-    top: 25vh !important;
-    width: 300vw !important;
-    height: 300vw !important;
-  }
-  .trajectory-card {
-    width: 320px !important; /* Slightly wider for better image visibility */
-    height: 420px !important;
-    transform-origin: center 150vw !important;
-  }
-  .trajectory-card h3 {
-    font-size: 2.2rem !important; /* Prominent name */
-    margin-bottom: 4px !important;
-  }
-  .trajectory-card p {
-    font-size: 12px !important;
-    letter-spacing: 4px !important;
-  }
-  .trajectory-card-overlay {
-    padding: 30px !important; /* More padding for legibility */
+  .trajectory-header p {
+    font-size: 0.8rem !important;
+    max-width: 250px;
+    margin: 0 auto;
   }
 
-  /* Mobile Carousel Specifics */
-  .mobile-carousel-wrapper {
-    position: relative;
-    width: 100%;
-    margin-top: 40px;
-    padding: 0 20px;
-    overflow-x: hidden;
-  }
-  .mobile-carousel-track {
+  /* Mobile Horizontal Track (Scroll-Driven) */
+  .mobile-horizontal-track {
     display: flex;
-    gap: 20px;
-    cursor: grab;
+    gap: 30px;
+    padding: 0 40px;
+    position: relative; /* Switch to relative for natural flow */
+    z-index: 15;
+    will-change: transform;
+    margin-top: 20px;
   }
   .mobile-destination-card {
-    min-width: calc(100vw - 60px);
-    height: 500px;
+    min-width: 80vw;
+    height: 55vh;
+    min-height: 380px;
   }
   .mobile-card-inner {
     position: relative;
@@ -564,6 +555,8 @@ h1, h2, h3 {
     display: flex;
     flex-direction: column;
     border-radius: 4px;
+    background: rgba(10, 25, 47, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
   .mobile-card-img {
     width: 100%;
@@ -571,32 +564,25 @@ h1, h2, h3 {
     object-fit: cover;
   }
   .mobile-card-content {
-    padding: 25px;
+    padding: 20px;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: rgba(0,0,0,0.4);
+    background: linear-gradient(to top, rgba(3, 10, 22, 0.95), transparent);
   }
   .mobile-card-content h3 {
-    font-size: 2.2rem;
-    margin-bottom: 8px;
+    font-size: 2rem;
+    margin-bottom: 4px;
     letter-spacing: 2px;
     color: white;
   }
   .mobile-card-content p {
     color: var(--color-accent);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 3px;
     margin: 0;
-  }
-  .mobile-carousel-hint {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 10px;
-    letter-spacing: 4px;
-    opacity: 0.5;
   }
 
   /* Experience Section */
