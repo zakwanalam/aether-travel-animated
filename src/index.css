@@ -523,12 +523,20 @@ h1, h2, h3 {
     height: 300vw !important;
   }
   .trajectory-card {
-    width: 280px !important; /* Scaled down cards */
-    height: 380px !important;
-    transform-origin: center 150vw !important; /* Adjust rotation center for larger wheel width */
+    width: 320px !important; /* Slightly wider for better image visibility */
+    height: 420px !important;
+    transform-origin: center 150vw !important;
   }
   .trajectory-card h3 {
-    font-size: 1.8rem !important;
+    font-size: 2.2rem !important; /* Prominent name */
+    margin-bottom: 4px !important;
+  }
+  .trajectory-card p {
+    font-size: 12px !important;
+    letter-spacing: 4px !important;
+  }
+  .trajectory-card-overlay {
+    padding: 30px !important; /* More padding for legibility */
   }
 
   /* Experience Section */

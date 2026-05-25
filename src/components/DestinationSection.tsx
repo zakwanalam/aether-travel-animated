@@ -30,6 +30,15 @@ const destinations = [
 const DestinationSection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const mql = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
 
   useLayoutEffect(() => {
     if (!wheelRef.current || !sectionRef.current) return;
@@ -73,8 +82,9 @@ const DestinationSection: React.FC = () => {
 
         <div ref={wheelRef} className="trajectory-wheel">
           {destinations.map((dest, i) => {
-            // Distribute cards along the wheel
-            const angle = (i - (destinations.length - 1) / 2) * 12; // 12 degrees apart
+            // Distribute cards along the wheel - wider angle on mobile to avoid congestion
+            const angleStep = isMobile ? 32 : 12;
+            const angle = (i - (destinations.length - 1) / 2) * angleStep;
             return (
               <div
                 key={dest.title}
