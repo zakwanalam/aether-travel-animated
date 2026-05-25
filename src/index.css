@@ -463,3 +463,136 @@ h1, h2, h3 {
 .footer-column ul li a:hover {
   color: var(--color-accent);
 }
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+  /* Global Typography */
+  h1 { font-size: 3rem !important; }
+  h2 { font-size: 2.2rem !important; }
+  p { font-size: 0.95rem !important; }
+
+  /* Navbar */
+  .luxury-nav {
+    padding: 20px 25px !important;
+  }
+  .nav-links {
+    display: none !important;
+  }
+  .nav-inquire-btn {
+    display: none !important; /* Save space for logo and menu */
+  }
+  .mobile-menu-toggle {
+    display: block !important;
+  }
+  .mobile-menu-overlay {
+    backdrop-filter: blur(20px) !important;
+    background: rgba(10, 25, 47, 0.9) !important;
+  }
+
+  /* Hero Animation */
+  .hero-animation-text {
+    top: 20% !important;
+    left: 5% !important;
+    width: 90% !important;
+  }
+  .hero-animation-text h1 {
+    font-size: 3.5rem !important;
+  }
+  .hero-animation-mid {
+    right: 5% !important;
+    top: 40% !important;
+    text-align: center !important;
+    width: 90% !important;
+  }
+  .hero-animation-arrival h2 {
+    font-size: 2.5rem !important;
+    letter-spacing: 6px !important;
+  }
+
+  /* Destination Section (The "dis" section) */
+  .trajectory-header {
+    top: 40px !important; /* Fixed too much space on top */
+    padding: 0 20px;
+  }
+  .trajectory-header h2 {
+    font-size: 1.8rem !important;
+    margin-bottom: 16px !important;
+  }
+  .trajectory-wheel {
+    top: 25vh !important;
+    width: 300vw !important;
+    height: 300vw !important;
+  }
+  .trajectory-card {
+    width: 280px !important; /* Scaled down cards */
+    height: 380px !important;
+    transform-origin: center 150vw !important; /* Adjust rotation center for larger wheel width */
+  }
+  .trajectory-card h3 {
+    font-size: 1.8rem !important;
+  }
+
+  /* Experience Section */
+  .experience-section {
+    padding: 80px 30px !important;
+  }
+  .experience-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .experience-title {
+    font-size: 2.2rem !important;
+    margin-bottom: 20px !important;
+  }
+  .experience-image-container {
+    height: 400px !important;
+    order: -1; /* Image on top */
+  }
+  .experience-content {
+    gap: 30px !important;
+  }
+
+  /* Trust Section */
+  .trust-section {
+    padding: 80px 30px !important;
+  }
+  .trust-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  .trust-card {
+    padding: 25px !important;
+  }
+
+  /* Testimonials */
+  .testimonial-section {
+    padding: 60px 0 !important;
+  }
+  .testimonial-card {
+    width: 300px !important;
+    padding: 20px !important;
+  }
+
+  /* Final CTA */
+  .cta-section {
+    padding: 60px 30px !important;
+  }
+  .cta-button {
+    width: 100% !important;
+    max-width: 300px;
+  }
+
+  /* Footer */
+  .luxury-footer {
+    padding: 60px 30px 30px !important;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+    text-align: center;
+  }
+  .footer-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}

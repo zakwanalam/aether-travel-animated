@@ -200,6 +200,7 @@ const HeroAnimation: React.FC = () => {
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 20 }}>
           {/* Section 1 - Intro (Plane) */}
           <motion.div 
+            className="hero-animation-text"
             style={{ 
               opacity: useTransform(scrollYProgress, [0, 0.1, 0.2], [1, 1, 0]),
               y: useTransform(scrollYProgress, [0, 0.1, 0.2], [0, 0, -50]),
@@ -217,6 +218,7 @@ const HeroAnimation: React.FC = () => {
 
           {/* Section 2 - Mid Journey */}
           <motion.div 
+            className="hero-animation-mid"
             style={{ 
               opacity: useTransform(scrollYProgress, [0.3, 0.45, 0.6], [0, 1, 0]),
               y: useTransform(scrollYProgress, [0.3, 0.45, 0.6], [50, 0, -50]),
@@ -247,6 +249,7 @@ const HeroAnimation: React.FC = () => {
             />
             
             <motion.div 
+              className="hero-animation-arrival"
               style={{ 
                 opacity: useTransform(scrollYProgress, [0.8, 0.92, 1], [0, 1, 1]),
                 y: useTransform(scrollYProgress, [0.8, 0.92, 1], [50, 0, 0]),
