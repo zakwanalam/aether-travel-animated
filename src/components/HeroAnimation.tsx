@@ -22,46 +22,96 @@ const HeroAnimation: React.FC = () => {
   useEffect(() => {
     let loadedCount = 0;
     const loadedImages: HTMLImageElement[] = [];
+    const STRIDES = [20, 5, 1]; // Loading passes: every 20th, then every 5th, then all
 
-    const preloadImages = () => {
-      for (let i = 0; i < FRAME_COUNT; i++) {
+    const loadImage = (index: number) => {
+      return new Promise<void>((resolve) => {
+        if (loadedImages[index]) {
+          resolve();
+          return;
+        }
+
         const img = new Image();
-        // Construct filename based on the provided pattern: travel_0XXX_Layer YYY.jpg
-        // Note: The original filenames have two numbers that seem related. 
-        // Based on the list_dir output: travel_0000_Layer 441.jpg, etc.
-        // Wait, let's re-verify the naming pattern.
-        // travel_0000_Layer 442.jpg
-        // travel_0441_Layer 1.jpg
-        const paddedIndex = i.toString().padStart(4, '0');
-        const layerIndex = FRAME_COUNT - i;
+        const paddedIndex = index.toString().padStart(4, '0');
+        const layerIndex = FRAME_COUNT - index;
         img.src = `/frames/travel_${paddedIndex}_Layer ${layerIndex}.jpg`;
         
         img.onload = () => {
           loadedCount++;
           setLoadProgress(Math.floor((loadedCount / FRAME_COUNT) * 100));
-          if (loadedCount === FRAME_COUNT) {
-            setIsLoading(false);
-          }
+          loadedImages[index] = img;
+          resolve();
         };
-        loadedImages[i] = img;
+
+        img.onerror = () => {
+          console.error(`Failed to load image at index ${index}`);
+          resolve();
+        };
+      });
+    };
+
+    const preloadImages = async () => {
+      // Pass 1: Every 20th frame (Critical for "Full Flow")
+      const pass1 = [];
+      for (let i = 0; i < FRAME_COUNT; i += STRIDES[0]) {
+        pass1.push(loadImage(i));
       }
-      setImages(loadedImages);
+      await Promise.all(pass1);
+      setImages([...loadedImages]);
+      setIsLoading(false);
+
+      // Pass 2: Every 5th frame (Improve smoothness)
+      const pass2 = [];
+      for (let i = 0; i < FRAME_COUNT; i += STRIDES[1]) {
+        if (i % STRIDES[0] === 0) continue;
+        pass2.push(loadImage(i));
+      }
+      await Promise.all(pass2);
+      setImages([...loadedImages]);
+
+      // Pass 3: All remaining frames (Full 60fps)
+      const allRemaining = [];
+      for (let i = 0; i < FRAME_COUNT; i++) {
+        if (i % STRIDES[1] === 0) continue;
+        allRemaining.push(i);
+      }
+
+      // Load remaining frames in small chunks
+      const CHUNK_SIZE = 5;
+      for (let i = 0; i < allRemaining.length; i += CHUNK_SIZE) {
+        const chunk = allRemaining.slice(i, i + CHUNK_SIZE).map(idx => loadImage(idx));
+        await Promise.all(chunk);
+        if (i % (CHUNK_SIZE * 4) === 0) setImages([...loadedImages]);
+      }
+      setImages([...loadedImages]);
     };
 
     preloadImages();
   }, []);
 
   useEffect(() => {
+    const findNearestFrame = (index: number) => {
+      const target = Math.round(index);
+      if (images[target]) return images[target];
+
+      // Search outwards for the nearest loaded frame
+      for (let offset = 1; offset < FRAME_COUNT; offset++) {
+        const prev = target - offset;
+        const next = target + offset;
+        if (prev >= 0 && images[prev]) return images[prev];
+        if (next < FRAME_COUNT && images[next]) return images[next];
+      }
+      return null;
+    };
+
     const renderFrame = (index: number) => {
       const canvas = canvasRef.current;
       const context = canvas?.getContext('2d');
-      const img = images[Math.round(index)];
+      const img = findNearestFrame(index);
 
       if (canvas && context && img) {
-        // Clear and draw
         context.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Handle aspect ratio (Cover)
         const canvasAspect = canvas.width / canvas.height;
         const imgAspect = img.width / img.height;
         let drawWidth, drawHeight, offsetX, offsetY;
